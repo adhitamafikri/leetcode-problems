@@ -2,7 +2,7 @@ package main
 
 import "fmt"
 
-func isValid(word string) bool {
+func isValidNaive(word string) bool {
 	if len(word) < 3 {
 		return false
 	}
@@ -119,8 +119,75 @@ func isValid(word string) bool {
 	return hasConsonant && hasVowel
 }
 
+func isValid(word string) bool {
+	if len(word) < 3 {
+		return false
+	}
+
+	hasVowel := false
+	hasConsonant := false
+
+	// play based on ascii
+	// numbers (48-57)
+	numsAsciiRange := map[string]int{
+		"min": 48,
+		"max": 57,
+	}
+	// alphabet - uppercase (65-90)
+	upperAsciiRange := map[string]int{
+		"min": 65,
+		"max": 90,
+	}
+	// alphabet - lowercase (97-122)
+	lowerAsciiRange := map[string]int{
+		"min": 97,
+		"max": 122,
+	}
+
+	vowelMap := map[string]int{
+		"a": 97,
+		"e": 101,
+		"i": 105,
+		"o": 111,
+		"u": 117,
+		"A": 65,
+		"E": 69,
+		"I": 73,
+		"O": 79,
+		"U": 85,
+	}
+
+	for _, item := range word {
+		ch := fmt.Sprintf("%c", item)
+		okNum := item >= rune(numsAsciiRange["min"]) && item <= rune(numsAsciiRange["max"])
+		okUpper := item >= rune(upperAsciiRange["min"]) && item <= rune(upperAsciiRange["max"])
+		okLower := item >= rune(lowerAsciiRange["min"]) && item <= rune(lowerAsciiRange["max"])
+		_, okVowel := vowelMap[ch]
+
+		if !(okNum || okUpper || okLower) {
+			return false
+		}
+
+		if okUpper || okLower {
+			if okVowel {
+				hasVowel = true
+			} else {
+				hasConsonant = true
+			}
+		}
+	}
+
+	return hasConsonant && hasVowel
+}
+
 // Ref: https://leetcode.com/problems/valid-word
 func main() {
+	// fmt.Println("Using the Naive approach")
+	// fmt.Println("is Word Valid: ", isValidNaive("234Adas"))
+	// fmt.Println("is Word Valid: ", isValidNaive("b3"))
+	// fmt.Println("is Word Valid: ", isValidNaive("a3$e"))
+
+	fmt.Println("Using the Optimized approach")
 	fmt.Println("is Word Valid: ", isValid("234Adas"))
 	fmt.Println("is Word Valid: ", isValid("b3"))
 	fmt.Println("is Word Valid: ", isValid("a3$e"))
