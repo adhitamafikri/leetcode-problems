@@ -2,18 +2,33 @@ package main
 
 import (
 	"fmt"
-	"strconv"
 )
 
-func isPalindrome(x int) bool {
-	strNum := strconv.Itoa(x)
-	length := len(strNum)
-	reversed := ""
+// func isPalindromeNaive(x int) bool {
+// 	strNum := strconv.Itoa(x)
+// 	length := len(strNum)
+// 	reversed := ""
 
-	for i := 0; i < length; i++ {
-		reversed += fmt.Sprintf("%c", strNum[length-1-i])
+// 	for i := 0; i < length; i++ {
+// 		reversed += fmt.Sprintf("%c", strNum[length-1-i])
+// 	}
+// 	return strNum == reversed
+// }
+
+func isPalindrome(x int) bool {
+	if x < 0 {
+		return false
 	}
-	return strNum == reversed
+
+	reverse := 0
+	temp := x
+
+	for temp != 0 {
+		reverse = (reverse * 10) + (temp % 10)
+		temp = temp / 10
+	}
+
+	return reverse == x
 }
 
 func main() {
