@@ -21,7 +21,6 @@ var prevHead *ListNode
 
 func deleteDuplicates(head *ListNode) *ListNode {
 	if head != nil {
-		fmt.Println("The item: ", head)
 		if prevHead == nil {
 			prevHead = head
 			deleteDuplicates(prevHead.Next)
