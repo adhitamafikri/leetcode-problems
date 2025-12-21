@@ -23,3 +23,5 @@ function main() {
 }
 
 main();
+
+export {}
