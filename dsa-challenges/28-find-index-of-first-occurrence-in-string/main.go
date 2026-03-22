@@ -3,39 +3,40 @@ package main
 import "fmt"
 
 func strStr(haystack string, needle string) int {
-	lenHaystack := len(haystack)
-	lenNeedle := len(needle)
+	// Hint: two pointer, only spawn 2nd pointer when we found first character of the needle in the haystack
+	// 1. Iterate the whole characters of haystack
+	// 2. Check if the current character is the first letter of the needle
+	// 3. If yes, set the second pointer to the i + needle_length
+	// 4. Check if the slice of [i:i+needle_length] matches the needle
+	// 5. If the result matches needle, immediately return the i
+	// 6. Otherwise, continue looping from the ptr as the new i
+	// 7. If no result until the end of the loop, it's guaranteed to return -1
+	// Note: immediately return -1 if the haystack is shorter than the needle
 
-	// edge case
-	if lenNeedle > lenHaystack {
+	hl, nl := len(haystack), len(needle)
+	ptr := 0
+
+	// edge case: needle is longer than haystack
+	if hl < nl {
 		return -1
 	}
 
-	result := -1 // the first index of the substring's occurrence
-	bucket := 0  // stores how may characters we've matched with the needle
-	for index, hs := range haystack {
-		if string(hs) == string(needle[0]) {
-			result = index
-			// iterate through the needle
-			for needleIndex, nd := range needle {
-				if index+needleIndex >= lenHaystack {
-					return -1
-				}
-				if string(nd) == string(haystack[index+needleIndex]) {
-					bucket++
-				}
+	// normal cases
+	for i := 0; i < hl; i++ {
+		if string(haystack[i]) == string(needle[0]) {
+			ptr = i + nl
+
+			if ptr > hl {
+				return -1
 			}
 
-			if bucket == lenNeedle {
-				return result
-			} else {
-				result = -1
-				bucket = 0
+			if haystack[i:ptr] == needle {
+				return i
 			}
 		}
 	}
 
-	return result
+	return -1
 }
 
 func main() {
