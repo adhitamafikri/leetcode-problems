@@ -64,7 +64,7 @@ func isAnagram(s string, t string) bool {
 }
 
 func main() {
-	fmt.Println("28. Find the Index of the First Occurrence in a String")
+	fmt.Println("242. Valid Anagram")
 
 	testCases := []struct {
 		s        string
