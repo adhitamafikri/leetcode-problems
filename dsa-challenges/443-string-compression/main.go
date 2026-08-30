@@ -91,6 +91,7 @@ func compress(chars []byte) int {
 				// move the write pointer next to the last index we've just overwritten
 				writePointer++
 			} else {
+				chars[writePointer] = chars[fast]
 				writePointer++
 			}
 
@@ -139,6 +140,8 @@ func main() {
 		{input: []byte{'a', 'a', 'a', 'b', 'b', 'c'}, expected: 5},
 		{input: []byte{'a', 'a', 'a', 'a', 'a', 'a', 'b', 'b', 'c', 'c'}, expected: 6},
 		{input: []byte{'a', 'a', 'a', 'a', 'a', 'a', 'a', 'a', 'a', 'a', 'a', 'a', 'b', 'b', 'c', 'c'}, expected: 7},
+		{input: []byte{'a', 'b', 'c', 'd', 'e', 'f', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'a', 'b', 'c'}, expected: 12},
+		{input: []byte{'a', 'b', 'c', 'd', 'e', 'f', 'g', 'g', 'g', 'g', 'a', 'b', 'c'}, expected: 11},
 	}
 
 	for index, tc := range testCases {
