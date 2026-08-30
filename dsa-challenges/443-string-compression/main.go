@@ -1,3 +1,5 @@
+// This problem demonstrates run-length encoding (RLE): consecutive identical
+// characters are represented by the character followed by their count.
 package main
 
 import (
