@@ -121,9 +121,13 @@ func compress(chars []byte) int {
 	// inspect the array
 	fmt.Println("bytes after mod: ", chars)
 	fmt.Println("actual word after mod: ", string(chars))
+	fmt.Println("actual word after mod | compressed: ", string(chars[:writePointer]))
 
-	// cheat: just return the last position of the write pointer
-	return writePointer
+	// // cheat: just return the last position of the write pointer
+	// return writePointer
+
+	// actually return the compressed array by slicing until the final position of writePointer
+	return len(chars[:writePointer])
 }
 
 func main() {
