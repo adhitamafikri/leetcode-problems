@@ -7,7 +7,7 @@ import (
 )
 
 // Solution using map - naive solution
-func compress(chars []byte) int {
+func compressV1(chars []byte) int {
 	// Flow:
 	// 1. Iterate all characters within the array
 	// 2. For each character, record them into the map -> char x occurrence
@@ -42,6 +42,89 @@ func compress(chars []byte) int {
 	return len(result)
 }
 
+// Solution using map and in-place modification
+func compress(chars []byte) int {
+	// Solution breakdown:
+	// 1. Iterate each character in the bytes array
+	// 2. For each iteration, simply record the occurrence of the character that, as long as the current character is still the same with the initial character being pointed at
+	// 3. Once the different character is found, replace the consecutive characters with the number of occurrences of that character, then point to the new character afterwards
+	// 4. Repeat the process until the end
+
+	// Hints
+	// 1. Use two pointers tech, slow and fast pointer.
+	// 2. Slow pointer is used to keep track of the position of the character, fast pointer is for iterating and counting the ocurrences
+
+	slow := 0
+	fast := slow + 1
+
+	// use this pointer to decide in which index should we write the item to replace
+	// why +1 from slow? Because the digits will be written immediately next to the current character pointed at by slow pointer
+	writePointer := slow + 1
+
+	// simple int variable to keep track of the occurrences of the current character that is being iterated
+	occurrences := 1
+
+	// edge case: only 1 item in byte array
+	if len(chars) == 1 {
+		return 1
+	}
+
+	// normal case
+	for fast < len(chars) {
+		// if the next character is still the same, just increase the occurrence
+		if chars[slow] == chars[fast] {
+			occurrences++
+		} else {
+			// if the next character is not the same, decide if we need to do in-place modification
+			if occurrences > 1 {
+				// convert the occurrences to byte array, to decide how many spaces we need to take for overwriting the digit into the array
+				digits := []byte(strconv.Itoa(occurrences))
+
+				// write the digits and advance the writePointer
+				for d := 0; d < len(digits); d++ {
+					chars[writePointer] = digits[d]
+					writePointer++
+				}
+
+				// write the new character to iterate, next to the digit we've just written into the array
+				chars[writePointer] = chars[fast]
+				// move the write pointer next to the last index we've just overwritten
+				writePointer++
+			} else {
+				writePointer++
+			}
+
+			// move the slow to the next char, as the char on the slow pointer does not have any consecutive same characters
+			slow = fast
+			// set occurrences to 1, marking the number of occurrences of the new character on slow pointer
+			occurrences = 1
+		}
+
+		// keep the fast pointer moving after each iteration
+		fast++
+	}
+
+	// handle the final occurrence writing as the loop ends when the iteration ends
+	// if the next character is not the same, decide if we need to do in-place modification
+	if occurrences > 1 {
+		// convert the occurrences to byte array, to decide how many spaces we need to take for overwriting the digit into the array
+		digits := []byte(strconv.Itoa(occurrences))
+
+		// write the digits and advance the writePointer
+		for d := 0; d < len(digits); d++ {
+			chars[writePointer] = digits[d]
+			writePointer++
+		}
+	}
+
+	// inspect the array
+	fmt.Println("bytes after mod: ", chars)
+	fmt.Println("actual word after mod: ", string(chars))
+
+	// cheat: just return the last position of the write pointer
+	return writePointer
+}
+
 func main() {
 	fmt.Println("443-string-compression")
 
@@ -52,6 +135,10 @@ func main() {
 		{input: []byte{'a', 'a', 'b', 'b', 'c', 'c', 'c'}, expected: 6},
 		{input: []byte{'a'}, expected: 1},
 		{input: []byte{'a', 'b', 'b', 'b', 'b', 'b', 'b', 'b', 'b', 'b', 'b', 'b', 'b'}, expected: 4},
+		{input: []byte{'a', 'a'}, expected: 2},
+		{input: []byte{'a', 'a', 'a', 'b', 'b', 'c'}, expected: 5},
+		{input: []byte{'a', 'a', 'a', 'a', 'a', 'a', 'b', 'b', 'c', 'c'}, expected: 6},
+		{input: []byte{'a', 'a', 'a', 'a', 'a', 'a', 'a', 'a', 'a', 'a', 'a', 'a', 'b', 'b', 'c', 'c'}, expected: 7},
 	}
 
 	for index, tc := range testCases {
